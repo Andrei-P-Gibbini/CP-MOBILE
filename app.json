@@ -5,6 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "updates": {
+      "enabled": false
+    },
     "splash": {
       "backgroundColor": "#ffffff"
     },
@@ -18,6 +21,9 @@
     },
     "web": {
       "bundler": "metro"
-    }
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
   }
 }

@@ -16,9 +16,9 @@ Aplicativo mobile desenvolvido em **React Native** (Expo) com **Firebase Authent
 Não é utilizado Firestore neste projeto — apenas Firebase Authentication.
 
 ## Tecnologias utilizadas
-- [React Native](https://reactnative.dev/) com [Expo](https://expo.dev/)
-- [Firebase Authentication](https://firebase.google.com/docs/auth) (SDK JS modular v10)
-- [@react-native-async-storage/async-storage](https://react-native-async-storage.github.io/async-storage/)
+- [React Native](https://reactnative.dev/) 0.86 com [Expo](https://expo.dev/) SDK 57
+- [Firebase Authentication](https://firebase.google.com/docs/auth) (SDK JS modular v12)
+- [@react-native-async-storage/async-storage](https://react-native-async-storage.github.io/async-storage/) 2.x
   — usado tanto pela persistência interna do Firebase Auth quanto para guardar um registro local (não sensível) da sessão ativa
 - [React Navigation](https://reactnavigation.org/) (native-stack)
 
@@ -27,6 +27,7 @@ Não é utilizado Firestore neste projeto — apenas Firebase Authentication.
 CP4-Mobile-Auth/
 ├── App.js                     # Componente raiz
 ├── firebaseConfig.js          # Configuração e inicialização do Firebase
+├── metro.config.js            # Configuração do bundler (ver observação abaixo)
 ├── src/
 │   ├── context/
 │   │   └── AuthContext.js     # Lógica de autenticação (cadastro, login, logout, etc.)
@@ -77,12 +78,43 @@ instalado no celular (Android/iOS), ou um emulador configurado.
 npm install
 
 # 2. Rodar o projeto
-npx expo start
+npx expo start -c
 ```
 
 Após rodar `npx expo start`, escaneie o QR Code exibido no terminal com o app
 **Expo Go** (Android) ou pela câmera (iOS), ou pressione `a` / `i` no terminal
 para abrir em um emulador Android/iOS.
+
+### Observação sobre o `metro.config.js`
+A partir do Expo SDK 53+, o Metro Bundler passou a seguir estritamente o
+campo `"exports"` do `package.json` de cada pacote instalado. O arquivo
+`metro.config.js` na raiz do projeto desativa esse comportamento
+(`unstable_enablePackageExports = false`) para evitar conflitos de resolução
+de módulos com dependências mais antigas.
+
+### Observação sobre a versão do Firebase
+O Expo (a partir do SDK usado neste projeto) só é compatível com
+`firebase@12.0.0` ou superior — versões anteriores causam erros de resolução
+de módulos ES. Além disso, a partir do Firebase v11 o caminho de importação
+`firebase/auth/react-native` foi removido: a persistência para React Native
+(`getReactNativePersistence`) agora é importada diretamente de `firebase/auth`,
+junto com `initializeAuth` e `getAuth`:
+
+```js
+import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth';
+```
+
+### Se o emulador Android não conectar ao Metro
+Em algumas máquinas, o redirecionamento de porta entre o emulador e o Metro
+Bundler (porta 8081) não é feito automaticamente. Se a tela do Expo Go ficar
+travada carregando ou mostrar `Failed to connect to /127.0.0.1:8081`, rode
+em outro terminal, com o emulador já ligado:
+```bash
+adb reverse tcp:8081 tcp:8081
+```
+e recarregue o app (tecla `r` no terminal do Expo, ou o botão de recarregar
+na tela de erro do Expo Go). Esse comando precisa ser repetido sempre que o
+emulador for reiniciado.
 
 ## Fluxos implementados (conforme roteiro de apresentação)
 1. Criar uma conta (tela de Cadastro)
