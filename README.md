@@ -133,3 +133,6 @@ emulador for reiniciado.
   autenticação do Firebase.
 - Erros do Firebase (e-mail já cadastrado, credenciais inválidas, senha fraca, etc.)
   são traduzidos para mensagens amigáveis em português (`src/utils/validation.js`).
+
+## Link do vídeo demonstrativo
+https://youtube.com/shorts/Obgb0xbt-2s?feature=share
