@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
@@ -23,4 +24,7 @@ try {
   auth = getAuth(app);
 }
 
-export { app, auth };
+// Cloud Firestore - usado a partir do CheckPoint 5 para armazenar os registros (livros) de cada usuário autenticado.
+const db = getFirestore(app);
+
+export { app, auth, db };
