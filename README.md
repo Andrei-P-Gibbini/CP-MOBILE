@@ -195,4 +195,4 @@ emulador for reiniciado.
 - Erros são tratados e exibidos como mensagens amigáveis em português.
 
 ## Link do vídeo demonstrativo
-_[adicionar o link aqui após gravar a apresentação]_
+https://youtu.be/JyID5_IaLQ0
