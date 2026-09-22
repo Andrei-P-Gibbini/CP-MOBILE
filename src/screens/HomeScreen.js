@@ -1,149 +1,79 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
-import Button from '../components/Button';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../context/AuthContext';
-import { translateFirebaseError } from '../utils/validation';
 
-export default function HomeScreen() {
-  const { user, signOut, deleteAccount } = useAuth();
-  const [loadingLogout, setLoadingLogout] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  async function handleLogout() {
-    setErrorMessage(null);
-    setLoadingLogout(true);
-    try {
-      await signOut();
-    } catch (error) {
-      setErrorMessage(translateFirebaseError(error));
-    } finally {
-      setLoadingLogout(false);
-    }
-  }
-
-  function confirmDeleteAccount() {
-    Alert.alert(
-      'Excluir conta',
-      'Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita.',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Excluir', style: 'destructive', onPress: handleDeleteAccount },
-      ]
-    );
-  }
-
-  async function handleDeleteAccount() {
-    setErrorMessage(null);
-    setLoadingDelete(true);
-    try {
-      await deleteAccount();
-    } catch (error) {
-      setErrorMessage(translateFirebaseError(error));
-    } finally {
-      setLoadingDelete(false);
-    }
-  }
+export default function HomeScreen({ navigation }) {
+  const { user } = useAuth();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {(user?.displayName || user?.email || '?').charAt(0).toUpperCase()}
-        </Text>
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.greeting}>Olá, {user?.displayName || user?.email}!</Text>
+      <Text style={styles.subtitle}>O que você achou do último livro que leu?</Text>
 
-      <Text style={styles.title}>Minha conta</Text>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('BooksList')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.cardTitle}>📚 Meus livros</Text>
+        <Text style={styles.cardText}>Veja, edite ou exclua os livros que você cadastrou.</Text>
+      </TouchableOpacity>
 
-      <View style={styles.infoCard}>
-        <Text style={styles.infoLabel}>Nome</Text>
-        <Text style={styles.infoValue}>{user?.displayName || '—'}</Text>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('BookForm')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.cardTitle}>➕ Novo livro</Text>
+        <Text style={styles.cardText}>Cadastre um novo livro e registre sua opinião.</Text>
+      </TouchableOpacity>
 
-        <Text style={[styles.infoLabel, styles.infoLabelSpaced]}>E-mail</Text>
-        <Text style={styles.infoValue}>{user?.email}</Text>
-      </View>
-
-      {errorMessage ? <Text style={styles.errorBanner}>{errorMessage}</Text> : null}
-
-      <Button
-        title="Sair (Logout)"
-        variant="secondary"
-        onPress={handleLogout}
-        loading={loadingLogout}
-      />
-
-      <Button
-        title="Excluir conta"
-        variant="danger"
-        onPress={confirmDeleteAccount}
-        loading={loadingDelete}
-        style={styles.deleteButton}
-      />
-    </ScrollView>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('Profile')}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.cardTitle}>👤 Perfil</Text>
+        <Text style={styles.cardText}>Veja seus dados, saia ou exclua sua conta.</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    alignItems: 'center',
+    flex: 1,
     padding: 24,
-    paddingTop: 48,
+    paddingTop: 32,
     backgroundColor: '#f5f7fa',
   },
-  avatar: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
-    backgroundColor: '#2b6cb0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  avatarText: {
-    color: '#fff',
-    fontSize: 34,
-    fontWeight: '700',
-  },
-  title: {
+  greeting: {
     fontSize: 24,
     fontWeight: '700',
     color: '#1f2933',
-    marginBottom: 24,
+    marginBottom: 4,
   },
-  infoCard: {
-    width: '100%',
+  subtitle: {
+    fontSize: 14,
+    color: '#616e7c',
+    marginBottom: 28,
+  },
+  card: {
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 18,
-    marginBottom: 24,
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: '#e4e7eb',
   },
-  infoLabel: {
-    fontSize: 12,
-    color: '#9aa5b1',
-    textTransform: 'uppercase',
-  },
-  infoLabelSpaced: {
-    marginTop: 12,
-  },
-  infoValue: {
+  cardTitle: {
     fontSize: 16,
+    fontWeight: '700',
     color: '#1f2933',
-    marginTop: 2,
+    marginBottom: 4,
   },
-  errorBanner: {
-    width: '100%',
-    color: '#e5484d',
-    backgroundColor: '#fdecea',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
+  cardText: {
     fontSize: 13,
-    textAlign: 'center',
-  },
-  deleteButton: {
-    marginTop: 12,
+    color: '#616e7c',
   },
 });
