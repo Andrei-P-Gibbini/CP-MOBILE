@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -57,7 +58,12 @@ export default function BookFormScreen({ navigation, route }) {
       } else {
         await createBook(user.uid, payload);
       }
-      navigation.goBack();
+
+      Alert.alert(
+        'Sucesso',
+        isEditing ? 'Livro atualizado com sucesso!' : 'Livro cadastrado com sucesso!',
+        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      );
     } catch (error) {
       setFormError('Não foi possível salvar o registro. Tente novamente.');
     } finally {

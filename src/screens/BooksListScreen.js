@@ -54,6 +54,7 @@ export default function BooksListScreen({ navigation }) {
     setDeletingId(livro.id);
     try {
       await deleteBook(user.uid, livro.id);
+      Alert.alert('Sucesso', 'Livro excluído com sucesso!');
     } catch (error) {
       setErrorMessage('Não foi possível excluir o registro. Tente novamente.');
     } finally {
