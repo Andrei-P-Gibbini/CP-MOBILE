@@ -12,7 +12,7 @@ import {
 import { auth } from '../../firebaseConfig';
 
 // Chave usada para guardar localmente os dados (NÃO sensíveis) da sessão ativa.
-// Nunca guardamos a senha do usuário aqui.
+// Nunca guarda a senha do usuário aqui.
 const SESSION_KEY = '@CP4:session';
 
 const AuthContext = createContext(null);
@@ -22,14 +22,10 @@ export function AuthProvider({ children }) {
   const [initializing, setInitializing] = useState(true);
 
   useEffect(() => {
-    // onAuthStateChanged dispara automaticamente ao abrir o app,
-    // pois o Firebase restaura a sessão persistida pelo AsyncStorage
-    // (configurado em firebaseConfig.js via getReactNativePersistence).
+    // onAuthStateChanged dispara automaticamente ao abrir o app, pois o Firebase restaura a sessão persistida pelo AsyncStorage(configurado em firebaseConfig.js via getReactNativePersistence).
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        // Mantemos também um registro simples da sessão no AsyncStorage,
-        // usado para identificar rapidamente que existe uma sessão ativa.
         await AsyncStorage.setItem(
           SESSION_KEY,
           JSON.stringify({

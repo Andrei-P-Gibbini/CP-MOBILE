@@ -9,8 +9,6 @@ export default function AppNavigator() {
   const { user, initializing } = useAuth();
 
   if (initializing) {
-    // Enquanto verificamos se existe uma sessão salva (Firebase + AsyncStorage),
-    // mostramos um indicador de carregamento em vez de decidir a rota errada.
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#2b6cb0" />

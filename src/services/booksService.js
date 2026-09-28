@@ -10,27 +10,10 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
-// Estrutura utilizada no Firestore (conforme pedido no enunciado do CP5):
-//
-// usuarios (collection)
-//   └── {uid} (documento implícito - identificado apenas pelo caminho)
-//         └── livros (subcollection)
-//               ├── {livroId}
-//               ├── {livroId}
-//               └── {livroId}
-//
-// Cada registro de livro só existe dentro do caminho "usuarios/{uid}/livros",
-// então um usuário nunca consegue ler ou escrever nos livros de outro usuário
-// (ver regras de segurança em firestore.rules).
-
 function livrosRef(uid) {
   return collection(db, 'usuarios', uid, 'livros');
 }
 
-/**
- * Escuta em tempo real a lista de livros do usuário autenticado.
- * Retorna a função de "unsubscribe" (chame no cleanup do useEffect).
- */
 export function subscribeToBooks(uid, onChange, onError) {
   const q = query(livrosRef(uid), orderBy('criadoEm', 'desc'));
   return onSnapshot(
